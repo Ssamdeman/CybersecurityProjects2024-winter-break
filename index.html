@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder/Decoder</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .input-box, .output-box {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        /* Style for mode selection buttons */
+        .side-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            padding: 10px 20px;
+            background-color: #333;
+            border: 2px solid #fff;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .mode-btn.active {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .encode-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .encode-btn:hover {
+            background-color: #444;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Base64 Encoder/Decoder</h2>
+    <div class="container">
+        <div class="column">
+            <h3>Input Text</h3>
+            <textarea class="input-box" placeholder="Enter your text here..."></textarea>
+        </div>
+        
+        <div class="column">
+            <!-- Mode selection buttons -->
+            <div class="side-buttons">
+                <button class="mode-btn active" id="encode-mode">Encode</button>
+                <button class="mode-btn" id="decode-mode">Decode</button>
+            </div>
+            <button class="encode-btn" id="action-btn">Encode Base64</button>
+        </div>
+        
+        <div class="column">
+            <h3>Output</h3>
+            <textarea class="output-box" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+    </div>
+
+    <!-- Import base64.js -->
+    <script src="./base64_encoding/base64.js"></script>
+    
+    <!-- Add event handling -->
+    <script>
+        // Get elements
+        const inputBox = document.querySelector('.input-box');
+        const outputBox = document.querySelector('.output-box');
+        const actionBtn = document.getElementById('action-btn');
+        const encodeModeBtn = document.getElementById('encode-mode');
+        const decodeModeBtn = document.getElementById('decode-mode');
+
+        // Track current mode
+        let isEncodeMode = true;
+
+        // Mode switching functionality
+        encodeModeBtn.addEventListener('click', () => {
+            isEncodeMode = true;
+            encodeModeBtn.classList.add('active');
+            decodeModeBtn.classList.remove('active');
+            actionBtn.textContent = 'Encode Base64';
+            inputBox.placeholder = 'Enter your text here...';
+            outputBox.placeholder = 'Base64 encoded text will appear here...';
+        });
+
+        decodeModeBtn.addEventListener('click', () => {
+            isEncodeMode = false;
+            decodeModeBtn.classList.add('active');
+            encodeModeBtn.classList.remove('active');
+            actionBtn.textContent = 'Decode Base64';
+            inputBox.placeholder = 'Enter Base64 text here...';
+            outputBox.placeholder = 'Decoded text will appear here...';
+        });
+
+        // Action button click handler
+        actionBtn.addEventListener('click', () => {
+            const inputText = inputBox.value;
+            try {
+                if (isEncodeMode) {
+                    outputBox.value = base64Encode(inputText);
+                } else {
+                    outputBox.value = base64Decode(inputText);
+                }
+            } catch (error) {
+                outputBox.value = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
