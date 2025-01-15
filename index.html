@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base64 Encoder/Decoder</title>
+    <title>Text Encoders and Encryptions</title>
     <style>
         body {
             margin: 0;
@@ -44,12 +44,12 @@
             resize: none;
         }
 
-        /* Style for mode selection buttons */
         .side-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .mode-btn {
@@ -88,7 +88,7 @@
     </style>
 </head>
 <body>
-    <h2>Base64 Encoder/Decoder</h2>
+    <h2>Text Encoder/Hasher</h2>
     <div class="container">
         <div class="column">
             <h3>Input Text</h3>
@@ -96,12 +96,13 @@
         </div>
         
         <div class="column">
-            <!-- Mode selection buttons -->
             <div class="side-buttons">
-                <button class="mode-btn active" id="encode-mode">Encode</button>
-                <button class="mode-btn" id="decode-mode">Decode</button>
+                <button class="mode-btn active" id="base64-encode">Base64 Encode</button>
+                <button class="mode-btn" id="base64-decode">Base64 Decode</button>
+                <button class="mode-btn" id="md5-hash">MD5 Hash</button>
+                <button class="mode-btn" id="sha256-hash">SHA-256 Hash</button>
             </div>
-            <button class="encode-btn" id="action-btn">Encode Base64</button>
+            <button class="encode-btn" id="action-btn">Process Text</button>
         </div>
         
         <div class="column">
@@ -110,48 +111,69 @@
         </div>
     </div>
 
-    <!-- Import base64.js -->
-    <script src="./base64_encoding/base64.js"></script>
+    <script src="/base64_encoding/hash.js"></script>
+    <script src="/base64_encoding/base64.js"></script>
     
-    <!-- Add event handling -->
     <script>
-        // Get elements
         const inputBox = document.querySelector('.input-box');
         const outputBox = document.querySelector('.output-box');
         const actionBtn = document.getElementById('action-btn');
-        const encodeModeBtn = document.getElementById('encode-mode');
-        const decodeModeBtn = document.getElementById('decode-mode');
+        const base64EncodeBtn = document.getElementById('base64-encode');
+        const base64DecodeBtn = document.getElementById('base64-decode');
+        const md5HashBtn = document.getElementById('md5-hash');
+        const sha256HashBtn = document.getElementById('sha256-hash');
 
-        // Track current mode
-        let isEncodeMode = true;
+        let currentMode = 'base64-encode';
 
-        // Mode switching functionality
-        encodeModeBtn.addEventListener('click', () => {
-            isEncodeMode = true;
-            encodeModeBtn.classList.add('active');
-            decodeModeBtn.classList.remove('active');
-            actionBtn.textContent = 'Encode Base64';
-            inputBox.placeholder = 'Enter your text here...';
-            outputBox.placeholder = 'Base64 encoded text will appear here...';
-        });
+        function setActiveMode(mode) {
+            const buttons = document.querySelectorAll('.mode-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(mode).classList.add('active');
+            currentMode = mode;
 
-        decodeModeBtn.addEventListener('click', () => {
-            isEncodeMode = false;
-            decodeModeBtn.classList.add('active');
-            encodeModeBtn.classList.remove('active');
-            actionBtn.textContent = 'Decode Base64';
-            inputBox.placeholder = 'Enter Base64 text here...';
-            outputBox.placeholder = 'Decoded text will appear here...';
-        });
+            switch(mode) {
+                case 'base64-encode':
+                    actionBtn.textContent = 'Encode Base64';
+                    break;
+                case 'base64-decode':
+                    actionBtn.textContent = 'Decode Base64';
+                    break;
+                case 'md5-hash':
+                    actionBtn.textContent = 'Generate MD5 Hash';
+                    break;
+                case 'sha256-hash':
+                    actionBtn.textContent = 'Generate SHA-256 Hash';
+                    break;
+            }
+        }
 
-        // Action button click handler
+        base64EncodeBtn.addEventListener('click', () => setActiveMode('base64-encode'));
+        base64DecodeBtn.addEventListener('click', () => setActiveMode('base64-decode'));
+        md5HashBtn.addEventListener('click', () => setActiveMode('md5-hash'));
+        sha256HashBtn.addEventListener('click', () => setActiveMode('sha256-hash'));
+
         actionBtn.addEventListener('click', () => {
             const inputText = inputBox.value;
             try {
-                if (isEncodeMode) {
-                    outputBox.value = base64Encode(inputText);
-                } else {
-                    outputBox.value = base64Decode(inputText);
+                //no empty input. 
+                // if (!inputText.trim()) {
+                //     outputBox.value = 'Please enter some text first';
+                //     return;
+                // }
+
+                switch(currentMode) {
+                    case 'base64-encode':
+                        outputBox.value = base64Encode(inputText);
+                        break;
+                    case 'base64-decode':
+                        outputBox.value = base64Decode(inputText);
+                        break;
+                    case 'md5-hash':
+                        outputBox.value = md5(inputText);
+                        break;
+                    case 'sha256-hash':
+                        outputBox.value = sha256(inputText);
+                        break;
                 }
             } catch (error) {
                 outputBox.value = 'Error: ' + error.message;
