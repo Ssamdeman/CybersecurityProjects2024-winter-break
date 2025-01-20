@@ -28,6 +28,18 @@
             border-radius: 4px;
             font-size: 16px;
         }
+        
+        #logOutput {
+            white-space: pre-wrap; /* Maintain newlines and whitespace */
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            height: 150px;
+            overflow-y: auto; /* Add scrolling when content overflows */
+        }
+
     </style>
 </head>
 <body>
@@ -35,6 +47,35 @@
         <h1>Keylogger Input Box</h1>
         <input type="text" id="keyloggerInput" placeholder="Type here..." />
         <p id="logOutput"></p>
+        <button id="resetButton">Reset Tracking</button>
     </div>
+    
+    <script>
+        // Select the input box, log display, and reset button
+        const inputBox = document.getElementById('keyloggerInput');
+        const logOutput = document.getElementById('logOutput');
+        const resetButton = document.getElementById('resetButton');
+    
+        // Event listener to track keystrokes
+        inputBox.addEventListener('keydown', (event) => {
+            const keyPressed = event.key; // Get the key that was pressed
+            if (keyPressed === "Enter") {
+                logOutput.textContent += "\n"; // Add a new line
+            } else {
+                logOutput.textContent += keyPressed + " "; // Append the key to the current line
+            }
+        });
+    
+        // Event listener for the reset button
+        resetButton.addEventListener('click', () => {
+            logOutput.textContent = ""; // Clear the displayed logs
+            inputBox.value = ""; // Clear the input box content
+        });
+    </script>
+    
+
+
+
+
 </body>
 </html>
