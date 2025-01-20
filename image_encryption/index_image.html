@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Encryption/Decryption</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        #previewImage {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+
+        .key-display {
+            word-break: break-all;
+            background-color: #e9e9e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Encryption/Decryption</h1>
+        
+        <!-- Encryption Section -->
+        <div class="section">
+            <h2>Encrypt Image</h2>
+            <div class="input-group">
+                <label for="imageInput">Select Image:</label>
+                <input type="file" id="imageInput" accept="image/*">
+                <div id="imagePreview"></div>
+            </div>
+            <button onclick="encryptImage()">Encrypt Image</button>
+            <div class="result" id="encryptionResult">
+                <div id="encryptedKey" class="key-display"></div>
+                <a id="downloadEncrypted" style="display: none;">Download Encrypted File</a>
+            </div>
+        </div>
+
+        <!-- Decryption Section -->
+        <div class="section">
+            <h2>Decrypt Image</h2>
+            <div class="input-group">
+                <label for="encryptedInput">Select Encrypted File:</label>
+                <input type="file" id="encryptedInput">
+            </div>
+            <div class="input-group">
+                <label for="keyInput">Enter Decryption Key:</label>
+                <input type="text" id="keyInput" placeholder="Paste your decryption key here">
+            </div>
+            <button onclick="decryptImage()">Decrypt Image</button>
+            <div class="result" id="decryptionResult">
+                <img id="decryptedImage" style="display: none; max-width: 100%;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create a blob from the file data
+                    const blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
+                    
+                    // Create object URL for the blob
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    // Create a download link
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    // Set the download path to the assets directory
+                    a.download = 'assets/' + file.name;
+                    
+                    // Trigger the download
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Cleanup
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    </script>
+</body>
+</html>
